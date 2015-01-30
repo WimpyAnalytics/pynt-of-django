@@ -44,8 +44,8 @@ def execute(script, *args):
 
 
 def venv_execute(script, *args):
-    script_path = os.path.join(project_paths.venv, script)
-    execute(script, *args)
+    script_path = os.path.join(project_paths.venv, 'bin', script)
+    execute(script_path, *args)
 
 
 def execute_pip(*args):

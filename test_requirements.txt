@@ -2,4 +2,4 @@
 bpython
 sphinx
 sphinx_rtd_theme
-pypandoc
+pyandoc
