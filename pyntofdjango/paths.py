@@ -1,4 +1,4 @@
-from os import path, walk
+from os import path, walk, listdir
 
 
 class ProjectPaths(object):
@@ -20,6 +20,13 @@ class ProjectPaths(object):
 
     @property
     def manage_root(self):
+        if not self._manage_root:
+            # Use the first directory with a manage.py
+            for root, dirs, files in walk(self.root):
+                if 'manage.py' in files:
+                    self._manage_root = root
+                    break
+
         return self._check(self._manage_root, "manage.py dir")
 
     @property
@@ -28,6 +35,22 @@ class ProjectPaths(object):
 
     @property
     def local_requirements(self):
+        if not self._local_requirements:
+            requirements_precedence = ['local', 'test']
+            for root, dirs, files in walk(self.root):
+                for requirement_type in requirements_precedence:
+                    project_level = '{}_requirements.txt'.format(requirement_type)
+                    if project_level in files:
+                        self._local_requirements = path.join(root, project_level)
+                        break
+                    nested = '{}.txt'.format(requirement_type)
+                    if root == 'requirements' and nested in files:
+                        self._local_requirements = path.join(root, nested)
+                        break
+
+            if 'requirements.txt' in listdir(self.root): # A last resort
+                self._local_requirements = 'requirements.txt'
+
         return self._check(self._local_requirements, "Local requirements file")
 
     @property
@@ -63,21 +86,5 @@ def setup(build_file_path, manage_dir=None, local_requirements=None):
     if 'build.py' not in build_file_path or not path.isfile(build_file_path):
         raise ValueError("build_file_path arg should be the path to your build.py. E.g. path.abspath(__file__)")
     root = path.dirname(build_file_path)
-
-    if not manage_dir:
-        # Use the first directory with a manage.py
-        for root, dirs, files in walk(root):
-            if 'manage.py' in files:
-                manage_dir = root
-                break
-
-    if not local_requirements:
-        for root, dirs, files in walk(root):
-            if 'local_requirements.txt' in files:
-                local_requirements = path.join(root, 'local_requirements.txt')
-                break
-            if root == 'requirements' and 'local.txt' in files:
-                local_requirements = path.join(root, 'local.txt')
-                break
 
     project_paths.setup(root, manage_dir, local_requirements)

@@ -55,3 +55,6 @@ target/
 
 # Pycharm
 .idea
+
+# Virtualenv
+venv

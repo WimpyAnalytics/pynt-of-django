@@ -22,10 +22,10 @@ def python(*str_args):
 @task()
 def clean():
     """Wipes any compiled python files"""
-    utils.execute('find {} -name "*.pyc" -delete'.format(project_paths.root))
-    utils.execute('find {} -name "*.pyo" -delete'.format(project_paths.root))
-    utils.execute('find {} -name "*~" -delete'.format(project_paths.root))
-    utils.execute('find {} -name "__pycache__" -delete'.format(project_paths.root))
+    utils.execute('find', project_paths.root, '-name', '*.pyc', '-delete')
+    utils.execute('find', project_paths.root, '-name', '*.pyo', '-delete')
+    utils.execute('find', project_paths.root, '-name', '*~', '-delete')
+    utils.execute('find', project_paths.root, '-name', '__pycache__', '-delete')
 
 
 @task()
