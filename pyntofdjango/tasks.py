@@ -8,6 +8,12 @@ import utils
 
 
 @task()
+def venv_bin(*str_args):
+    """Runs a script in the venv bin. E.g. pynt venv_bin[django-admin.py]"""
+    utils.venv_execute(*str_args)
+
+
+@task()
 def pip(*str_args):
     """Runs the project's pip with args"""
     utils.execute_pip(*str_args)

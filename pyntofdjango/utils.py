@@ -43,12 +43,17 @@ def execute(script, *args):
         sys.exit(1)
 
 
+def venv_execute(script, *args):
+    script_path = os.path.join(project_paths.venv, script)
+    execute(script, *args)
+
+
 def execute_pip(*args):
-    execute(project_paths.venv_pip, *args)
+    venv_execute('pip', *args)
 
 
 def execute_python(*args):
-    execute(project_paths.venv_python, *args)
+    venv_execute('python', *args)
 
 
 def execute_manage(*args):
