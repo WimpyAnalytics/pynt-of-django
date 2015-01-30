@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(MODULE_PATH))
 import pyntofdjango
 pyntofdjango.setup(MODULE_PATH)
 from pyntofdjango.tasks import pip, python, clean, create_venv, manage, recreate_venv, runserver, tests_tox, migrate, \
-    docs, venv_bin
+    docs, venv_bin, tests_manage, delete_venv, dumpdata
 
 from pyntofdjango import utils
 from pynt import task
