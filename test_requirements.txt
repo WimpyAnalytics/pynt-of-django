@@ -1,4 +1,5 @@
+.
 bpython
 sphinx
 sphinx_rtd_theme
-Django
+pypandoc

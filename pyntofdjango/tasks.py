@@ -9,7 +9,10 @@ import utils
 
 @task()
 def venv_bin(*str_args):
-    """Runs a script in the venv bin. E.g. pynt venv_bin[django-admin.py]"""
+    """
+    Runs a script in the venv bin.
+    \t\t\t\t    E.g. pynt venv_bin[django-admin.py]
+    """
     utils.venv_execute(*str_args)
 
 
@@ -106,10 +109,3 @@ def docs():
     """Makes the docs"""
     with utils.safe_cd('docs'):
         utils.execute(project_paths.venv_sphinx, '-b', 'html', '.', '_build/html')
-
-
-@task()
-def rundocserver():
-    """Runs the sphinx-autobuild server"""
-    with utils.safe_cd('docs'):
-        utils.execute(project_paths.venv_sphinx_auto, '.', '_build/html')

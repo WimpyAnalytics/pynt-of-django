@@ -23,6 +23,8 @@ class ProjectPaths(object):
         if not self._manage_root:
             # Use the first directory with a manage.py
             for root, dirs, files in walk(self.root):
+                if 'venv' in root:
+                    continue
                 if 'manage.py' in files:
                     self._manage_root = root
                     break
@@ -38,6 +40,8 @@ class ProjectPaths(object):
         if not self._local_requirements:
             requirements_precedence = ['local', 'test']
             for root, dirs, files in walk(self.root):
+                if 'venv' in root:
+                    continue
                 for requirement_type in requirements_precedence:
                     project_level = '{}_requirements.txt'.format(requirement_type)
                     if project_level in files:
