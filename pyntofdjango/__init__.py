@@ -1,4 +1,4 @@
-import paths
+from . import paths
 
 
 def setup_pod(build_file_path, manage_dir=None, local_requirements=None):

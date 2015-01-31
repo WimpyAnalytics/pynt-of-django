@@ -5,8 +5,8 @@ from subprocess import CalledProcessError
 
 import mock
 
-import utils
-import paths
+from . import utils
+from . import paths
 
 
 class TestSafeCd(unittest.TestCase):
