@@ -63,7 +63,7 @@ def recreate_venv():
 @task()
 def manage(*arg_string):
     """Runs the demo's manage.py with args"""
-    project.execute_python(*arg_string)
+    project.execute_manage(*arg_string)
 
 
 @task()
@@ -114,7 +114,7 @@ def test_tox(flush=False):
 @task()
 def migrate():
     """Migrates the development db"""
-    project.execute_python('migrate')
+    project.execute_manage('migrate')
 
 
 @task()
@@ -122,4 +122,3 @@ def docs():
     """Makes the docs"""
     with utils.safe_cd('docs'):
         project.venv_execute('sphinx-build', '-b', 'html', '.', '_build/html')
-        #utils.execute(project_paths.venv_sphinx, '-b', 'html', '.', '_build/html')
