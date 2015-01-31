@@ -69,7 +69,7 @@ def manage(*arg_string):
 @task()
 def runserver():
     """Runs the demo development server"""
-    project.execute_python('runserver')
+    project.execute_manage('runserver')
 
 
 @task()
@@ -80,7 +80,7 @@ def dumpdata(app_target):
     logger = logging.getLogger('pynt')
     logger.propagate = False
 
-    project.execute_python('dumpdata', '--indent=4', app_target)
+    project.execute_manage('dumpdata', '--indent=4', app_target)
 
 
 @task()
