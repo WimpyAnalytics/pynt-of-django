@@ -4,7 +4,7 @@ MODULE_PATH = os.path.abspath(__file__)
 
 # IGNORE ME: So that we can use our own tools to setup the project as others would
 import sys
-sys.path.append(os.path.dirname(MODULE_PATH))
+sys.path.insert(0, os.path.dirname(MODULE_PATH))
 # End Ignore
 
 import pyntofdjango
