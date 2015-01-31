@@ -93,7 +93,7 @@ def test_nose():
 def test_manage():
     """Runs all tests through manage.py"""
     with utils.safe_cd(project_paths.manage_root):
-        project.execute_python('test')
+        project.execute_manage('test')
 
 
 @task()
