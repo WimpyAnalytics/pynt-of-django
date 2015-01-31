@@ -3,6 +3,8 @@ pynt-of-django
 
 A companion library for using pynt, a build tool, with Django projects.
 
+|Build Status|
+
 Install
 -------
 
@@ -15,8 +17,9 @@ From within your build.py, setup pyntofdjango.
 
 ::
 
+    import os
     import pyntofdjango
-    pyntofdjango.setup_pod(MODULE_PATH)
+    pyntofdjango.setup_pod(os.path.abspath(__file__))
 
 Import any tasks you may need. See `pyntofdjango's
 build.py <https://github.com/WimpyAnalytics/pynt-of-django/blob/master/build.py>`__
@@ -62,3 +65,5 @@ same reason.
 3. It supports Python 3 and so does this project.
 4. It makes for a cool companion project name.
 
+.. |Build Status| image:: https://travis-ci.org/WimpyAnalytics/pynt-of-django.svg?branch=master
+   :target: https://travis-ci.org/WimpyAnalytics/pynt-of-django
