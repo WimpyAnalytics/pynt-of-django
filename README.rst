@@ -1,8 +1,8 @@
 pynt-of-django
 ==============
 
-This library builds provides a set of pre-built tasks for your build.py
-along with supporting utility and project specific functions.
+This library provides a set of pre-built tasks for your, pynt based,
+build.py along with supporting utility and project specific functions.
 
 |Build Status|
 
