@@ -46,14 +46,15 @@ class ProjectPaths(object):
                     project_level = '{}_requirements.txt'.format(requirement_type)
                     if project_level in files:
                         self._local_requirements = path.join(root, project_level)
-                        break
+                        return self._local_requirements
                     nested = '{}.txt'.format(requirement_type)
-                    if root == 'requirements' and nested in files:
+                    if 'requirements' in root and nested in files:
                         self._local_requirements = path.join(root, nested)
-                        break
+                        return self._local_requirements
 
             if 'requirements.txt' in listdir(self.root): # A last resort
-                self._local_requirements = 'requirements.txt'
+                self._local_requirements = path.join(self.root, 'requirements.txt')
+                return self._local_requirements
 
         return self._check(self._local_requirements, "Local requirements file")
 
@@ -61,23 +62,13 @@ class ProjectPaths(object):
     def venv(self):
         return path.join(self.root, 'venv')
 
-    @property
-    def venv_python(self):
-        return path.join(self.venv, 'bin/python')
-
-    @property
-    def venv_sphinx(self):
-        return path.join(self.venv, 'bin/sphinx-build')
-
-    @property
-    def venv_sphinx_auto(self):
-        return path.join(self.venv, 'bin/sphinx-autobuild')
-
-    @property
-    def venv_pip(self):
-        return path.join(self.venv, 'bin/pip')
-
     def setup(self, root, manage_root, local_requirements):
+        if not path.isdir(root):
+            raise ValueError("root {} could not be found.".format(root))
+        if manage_root and not path.isdir(manage_root):
+            raise ValueError("manage_root {} could not be found.".format(manage_root))
+        if local_requirements and not path.isfile(local_requirements):
+            raise ValueError("local_requirements {} could not be found.".format(local_requirements))
         self._root = root
         self._manage_root = manage_root
         self._local_requirements = local_requirements
@@ -87,6 +78,9 @@ project_paths = ProjectPaths()
 
 
 def setup(build_file_path, manage_dir=None, local_requirements=None):
+    global project_paths
+    project_paths = ProjectPaths()
+
     if 'build.py' not in build_file_path or not path.isfile(build_file_path):
         raise ValueError("build_file_path arg should be the path to your build.py. E.g. path.abspath(__file__)")
     root = path.dirname(build_file_path)

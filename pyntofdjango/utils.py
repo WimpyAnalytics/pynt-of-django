@@ -3,7 +3,7 @@ from subprocess import call, check_call, CalledProcessError
 import os
 import sys
 
-from paths import project_paths
+from six import print_
 
 
 @contextlib.contextmanager
@@ -14,7 +14,7 @@ def safe_cd(path):
 
     Usage:
     >>> with safe_cd('some/repo'):
-    ... call('git status')
+    ...     call('git status')
     """
     starting_directory = os.getcwd()
     try:
@@ -36,35 +36,8 @@ def execute(script, *args):
     try:
         return check_call(popen_args, shell=False)
     except CalledProcessError as ex:
-        print(ex)
+        print_(ex)
         sys.exit(ex.returncode)
     except Exception as ex:
-        print('Error: {} with script: {} and args {}'.format(ex, script, args))
+        print_('Error: {} with script: {} and args {}'.format(ex, script, args))
         sys.exit(1)
-
-
-def venv_execute(script, *args):
-    script_path = os.path.join(project_paths.venv, 'bin', script)
-    execute(script_path, *args)
-
-
-def execute_pip(*args):
-    venv_execute('pip', *args)
-
-
-def execute_python(*args):
-    venv_execute('python', *args)
-
-
-def execute_manage(*args):
-    execute_python(project_paths.manage_py, *args)
-
-
-def recursive_load(search_root):
-    """Recursively loads all fixtures"""
-    for root, dirs, files in os.walk(search_root):
-        dir_name = os.path.basename(root)
-        if dir_name == 'fixtures':
-            for file_name in files:
-                fixture_path = os.path.join(root, file_name)
-                execute_manage('loaddata', fixture_path)

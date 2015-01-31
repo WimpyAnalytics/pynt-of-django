@@ -1,7 +1,7 @@
 import paths
 
 
-def setup(build_file_path, manage_dir=None, local_requirements=None):
+def setup_pod(build_file_path, manage_dir=None, local_requirements=None):
     """
     This must be called by the project's build.py for pyntofdjango to function.
 

@@ -3,3 +3,5 @@ bpython
 sphinx
 sphinx_rtd_theme
 pyandoc
+nose
+mock
