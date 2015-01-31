@@ -3,6 +3,35 @@ pynt-of-django
 
 A companion library for using pynt, a build tool, with Django projects.
 
+Install
+-------
+
+-  ``pip install pynt-of-django``
+
+Usage
+-----
+
+From within your build.py, setup pyntofdjango.
+
+::
+
+    import pyntofdjango
+    pyntofdjango.setup_pod(MODULE_PATH)
+
+Import any tasks you may need. See `pyntofdjango's
+build.py <https://github.com/WimpyAnalytics/pynt-of-django/blob/master/build.py>`__
+for a full list.
+
+::
+
+    from pyntofdjango.tasks import create_venv, manage, test_nose
+
+Now you should see your new tasks on the command line.
+
+::
+
+    pynt -l
+
 About
 -----
 
