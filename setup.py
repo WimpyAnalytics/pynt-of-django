@@ -24,7 +24,7 @@ test_requirements = [
 setup(
     name='pynt-of-django',
     version='0.1.0',
-    description='TODO',
+    description='A companion library for using pynt, a build tool, with Django projects.',
     long_description=readme + '\n\n' + history,
     author='Ivan Ven Osdel',
     author_email='ivan@wimpyanalytics.com',

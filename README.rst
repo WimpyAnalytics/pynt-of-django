@@ -1,7 +1,8 @@
 pynt-of-django
 ==============
 
-A companion library for using pynt, a build tool, with Django projects.
+This library builds provides a set of pre-built tasks for your build.py
+along with supporting utility and project specific functions.
 
 |Build Status|
 
