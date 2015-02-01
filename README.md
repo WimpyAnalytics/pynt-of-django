@@ -25,6 +25,24 @@ Now you should see your new tasks on the command line.
 pynt -l
 ```
 
+## Additional Tools
+You are likely to run into cases that the canned tasks don't cover.
+Or maybe they are close but not exactly what you want. 
+For this the lower level functions may be useful when building your own pynt tasks.
+
+There is a [project module](https://github.com/WimpyAnalytics/pynt-of-django/blob/master/pyntofdjango/project.py) containing functions specific to your project.
+
+```
+from pyntofdjango import project
+```
+
+As well as a [utils module](https://github.com/WimpyAnalytics/pynt-of-django/blob/master/pyntofdjango/utils.py) containing general utility functions.
+
+```
+from pyntofdjango import utils
+```
+
+
 ## About
 This project builds on the [basic way to use virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/#basic-usage), where the virtualenv folder (called venv) is placed within the project and ignored by the repo.
 

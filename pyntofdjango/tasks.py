@@ -40,7 +40,8 @@ def clean():
 
 @task()
 def delete_venv():
-    """Deletes the virtualenv"""
+    """Deletes the venv with a max size check."""
+    utils.safe_size_check(project_paths.venv, "Aborting venv removal for safety.")
     utils.execute('rm', '-rf', project_paths.venv)
 
 
@@ -67,9 +68,9 @@ def manage(*arg_string):
 
 
 @task()
-def runserver():
+def runserver(*args):
     """Runs the demo development server"""
-    project.execute_manage('runserver')
+    project.execute_manage('runserver', *args)
 
 
 @task()
@@ -84,41 +85,41 @@ def dumpdata(app_target):
 
 
 @task()
-def test_nose():
+def test_nose(*args):
     """Runs all tests through nosetests"""
-    project.venv_execute('nosetests')
+    project.venv_execute('nosetests', *args)
 
 
 @task()
-def test_manage():
+def test_manage(*args):
     """Runs all tests through manage.py"""
     with utils.safe_cd(project_paths.manage_root):
-        project.execute_manage('test')
+        project.execute_manage('test', *args)
 
 
 @task()
-def test_setup():
+def test_setup(*args):
     """Runs all tests through manage.py"""
-    project.execute_python('setup.py', 'test')
+    project.execute_python('setup.py', 'test', *args)
 
 
 @task()
-def test_tox(flush=False):
+def test_tox(flush=False, *args):
     """Runs all tests for all environments."""
-    args = ['tox']
+    args = args.append('tox')
     if flush:
         args.append('-r')
     utils.execute(*args)
 
 
 @task()
-def migrate():
+def migrate(*args):
     """Migrates the development db"""
-    project.execute_manage('migrate')
+    project.execute_manage('migrate', *args)
 
 
 @task()
-def docs():
+def docs(*args):
     """Makes the docs"""
     with utils.safe_cd('docs'):
-        project.venv_execute('sphinx-build', '-b', 'html', '.', '_build/html')
+        project.venv_execute('sphinx-build', '-b', 'html', '.', '_build/html', *args)

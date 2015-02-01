@@ -99,6 +99,7 @@ class PathsTestBase(unittest.TestCase):
         self.temp_located_requirements = self.temp_local_requirements
         self.temp_located_manage_py = self.temp_manage_py
         os.mkdir(self.temp_requirements_dir)
+        os.mkdir(self.temp_venv)
 
         self.touch_file(self.temp_manage_py)
         self.touch_file(self.temp_test_requirements)
@@ -221,4 +222,18 @@ class TestPathOverrides(PathsTestBase):
             paths.project_paths.setup(self.temp_dir, None, 'not/a/file.txt')
             self.fail('An error should have been raised')
         except ValueError:
+            pass
+
+
+class TestPathSizeCheck(PathsTestBase):
+
+    def setUp(self):
+        self.setup_temp_project()
+
+    def test_fails_if_larger(self):
+        """Should fail if location is larger than expected"""
+        try:
+            utils.safe_size_check(paths.project_paths.venv, "That's huge!", max_bytes=0)
+            self.fail("Check did not fail as we expected.")
+        except AssertionError:
             pass
