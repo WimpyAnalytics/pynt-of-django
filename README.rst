@@ -36,6 +36,29 @@ Now you should see your new tasks on the command line.
 
     pynt -l
 
+Additional Tools
+----------------
+
+You are likely to run into cases that the canned tasks don't cover. Or
+maybe they are close but not exactly what you want. For this the lower
+level functions may be useful when building your own pynt tasks.
+
+There is a `project
+module <https://github.com/WimpyAnalytics/pynt-of-django/blob/master/pyntofdjango/project.py>`__
+containing functions specific to your project.
+
+::
+
+    from pyntofdjango import project
+
+As well as a `utils
+module <https://github.com/WimpyAnalytics/pynt-of-django/blob/master/pyntofdjango/utils.py>`__
+containing general utility functions.
+
+::
+
+    from pyntofdjango import utils
+
 About
 -----
 
