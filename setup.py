@@ -23,13 +23,13 @@ test_requirements = [
 
 setup(
     name='pynt-of-django',
-    version='0.1.0',
+    version='0.2.0',
     description='A companion library for using pynt, a build tool, with Django projects.',
     long_description=readme + '\n\n' + history,
     author='Ivan Ven Osdel',
     author_email='ivan@wimpyanalytics.com',
     url='https://github.com/WimpyAnalytics/pynt-of-django',
-    download_url='https://github.com/wimpyanalytics/pynt-of-django/tarball/0.1.0',
+    download_url='https://github.com/wimpyanalytics/pynt-of-django/tarball/0.2.0',
     packages=[
         'pyntofdjango',
     ],
@@ -41,7 +41,7 @@ setup(
     zip_safe=False,
     keywords=['pynt', 'django', 'build', 'make'],
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
