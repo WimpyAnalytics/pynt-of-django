@@ -34,7 +34,7 @@ def execute(script, *args):
 
     popen_args = [script] + list(args)
     try:
-        return check_call(*popen_args, shell=False)
+        return check_call(popen_args, shell=False)
     except CalledProcessError as ex:
         print_(ex)
         sys.exit(ex.returncode)
