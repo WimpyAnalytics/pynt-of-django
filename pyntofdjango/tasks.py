@@ -35,7 +35,7 @@ def clean():
     utils.execute('find', project_paths.root, '-name', '*.pyc', '-delete')
     utils.execute('find', project_paths.root, '-name', '*.pyo', '-delete')
     utils.execute('find', project_paths.root, '-name', '*~', '-delete')
-    utils.execute('find', project_paths.root, '-name', '__pycache__', '-delete')
+    utils.execute('find', project_paths.root, '-name', '__pycache__', '-exec', '"rm -r"', '{}', ';')
 
 
 @task()
