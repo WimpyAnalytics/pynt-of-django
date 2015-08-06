@@ -1,7 +1,7 @@
 import os
 
-from paths import project_paths
-from utils import execute
+from .paths import project_paths
+from .utils import execute
 
 
 def venv_execute(script, *args):

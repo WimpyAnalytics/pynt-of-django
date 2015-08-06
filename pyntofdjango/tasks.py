@@ -3,9 +3,9 @@ import logging
 
 from pynt import task
 
-from paths import project_paths
-import project
-import utils
+from .paths import project_paths
+from . import project
+from . import utils
 
 
 @task()
@@ -106,7 +106,7 @@ def test_setup(*args):
 @task()
 def test_tox(flush=False, *args):
     """Runs all tests for all environments."""
-    args = args.append('tox')
+    args = [arg for arg in args] + ['tox']
     if flush:
         args.append('-r')
     utils.execute(*args)
