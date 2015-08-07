@@ -7,12 +7,31 @@ class ProjectPaths(object):
         self._root = None
         self._manage_root = None
         self._local_requirements = None
+        self._test_requirements = None
+        self._requirements_txt = None
 
     def _check(self, value, error_subject):
         if not value:
             raise ValueError("{} not available. You may need to provide it to pyntofdjango.setup.".format(
                 error_subject))
         return value
+
+    def _locate_specific_requirements(self, specific_part, dest_attr):
+        for root, dirs, files in walk(self.root):
+            if 'venv' in root:
+                continue
+
+            project_level = '{}_requirements.txt'.format(specific_part)
+            if project_level in files:
+                full_path = path.join(root, project_level)
+                setattr(self, dest_attr, full_path)
+                return full_path
+
+            nested = '{}.txt'.format(specific_part)
+            if 'requirements' in root and nested in files:
+                full_path = path.join(root, nested)
+                setattr(self, dest_attr, full_path)
+                return full_path
 
     @property
     def root(self):
@@ -36,26 +55,28 @@ class ProjectPaths(object):
         return path.join(self.manage_root, 'manage.py')
 
     @property
-    def local_requirements(self):
-        if not self._local_requirements:
-            requirements_precedence = ['local', 'test']
+    def test_requirements(self):
+        if not self._test_requirements:
+            self._locate_specific_requirements('test', '_test_requirements')
+        return self._check(self._test_requirements, "Test requirements file")
+
+    @property
+    def requirements_txt(self):
+        if not self._requirements_txt:
+            name = 'requirements.txt'
             for root, dirs, files in walk(self.root):
                 if 'venv' in root:
                     continue
-                for requirement_type in requirements_precedence:
-                    project_level = '{}_requirements.txt'.format(requirement_type)
-                    if project_level in files:
-                        self._local_requirements = path.join(root, project_level)
-                        return self._local_requirements
-                    nested = '{}.txt'.format(requirement_type)
-                    if 'requirements' in root and nested in files:
-                        self._local_requirements = path.join(root, nested)
-                        return self._local_requirements
 
-            if 'requirements.txt' in listdir(self.root): # A last resort
-                self._local_requirements = path.join(self.root, 'requirements.txt')
-                return self._local_requirements
+                if name in files:
+                    self._requirements_txt = path.join(root, name)
+                    return self._requirements_txt
+        return self._check(self._requirements_txt, "requirements.txt file")
 
+    @property
+    def local_requirements(self):
+        if not self._local_requirements:
+            self._locate_specific_requirements('local', '_local_requirements')
         return self._check(self._local_requirements, "Local requirements file")
 
     @property

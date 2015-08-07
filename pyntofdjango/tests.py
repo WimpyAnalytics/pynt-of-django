@@ -4,6 +4,7 @@ import tempfile
 from subprocess import CalledProcessError
 
 import mock
+from pyntcontrib import safe_cd, execute
 
 from . import utils
 from . import paths
@@ -17,7 +18,7 @@ class TestSafeCd(unittest.TestCase):
 
     def test_change_yield_revert(self):
         """Safe cd should change directory, yield and revert back"""
-        with utils.safe_cd(self.temp_dir):
+        with safe_cd(self.temp_dir):
             os.path.exists(self.temp_dir)
 
         self.assertEqual(os.getcwd(), self.cwd, "Working directory was not restored.")
@@ -25,7 +26,7 @@ class TestSafeCd(unittest.TestCase):
     def test_change_error_revert(self):
         """Should restore directory after an exception during yield"""
         try:
-            with utils.safe_cd(self.temp_dir):
+            with safe_cd(self.temp_dir):
                 raise ValueError
         except ValueError:
             pass
@@ -33,42 +34,20 @@ class TestSafeCd(unittest.TestCase):
         self.assertEqual(os.getcwd(), self.cwd, "Working directory was not restored.")
 
 
-class TestExecute(unittest.TestCase):
-
-    @mock.patch('pyntofdjango.utils.check_call')
-    @mock.patch('pyntofdjango.utils.print_')
-    @mock.patch('pyntofdjango.utils.sys.exit')
-    def test_successful_command(self, mock_exit, mock_print_, mock_check_call):
-        """A successful command should not exit"""
-        utils.execute('python', '-V')
-
-        self.assertFalse(mock_exit.called)
-        self.assertFalse(mock_print_.called)
-        self.assertTrue(mock_check_call.called)
-
-    @mock.patch('pyntofdjango.utils.check_call')
-    @mock.patch('pyntofdjango.utils.print_')
-    @mock.patch('pyntofdjango.utils.sys.exit')
-    def test_bad_command(self, mock_exit, mock_print_, mock_check_call):
-        """A bad command should exit with the error code"""
-        command = ['notatall', 'athing']
-        mock_check_call.side_effect = CalledProcessError(1, command)
-
-        utils.execute(*command)
-
-        self.assertTrue(mock_exit.called)
-        self.assertTrue(mock_print_.called)
-        self.assertTrue(mock_check_call.called)
-
-
 class PathsTestBase(unittest.TestCase):
 
-    paths_under_test = ['root', 'manage_root', 'manage_py', 'local_requirements', 'venv']
+    paths_under_test = [
+        'root', 'manage_root', 'manage_py', 'local_requirements', 'test_requirements', 'requirements_txt', 'venv'
+    ]
+    temp_located_local_requirements = None
+    temp_located_test_requirements = None
+    temp_located_requirements_txt = None
+    project_paths = None
 
     def get_actual_paths(self):
         actual = {}
         for attribute in self.paths_under_test:
-            actual[attribute] = getattr(paths.project_paths, attribute)
+            actual[attribute] = getattr(self.project_paths, attribute)
         return actual
 
     def get_expected_paths(self):
@@ -76,7 +55,9 @@ class PathsTestBase(unittest.TestCase):
             'root': self.temp_dir,
             'manage_root': self.temp_dir,
             'manage_py': self.temp_located_manage_py,
-            'local_requirements': self.temp_located_requirements,
+            'local_requirements': self.temp_located_local_requirements,
+            'test_requirements': self.temp_located_test_requirements,
+            'requirements_txt': self.temp_located_requirements_txt,
             'venv': self.temp_venv,
         }
         return expected
@@ -96,7 +77,6 @@ class PathsTestBase(unittest.TestCase):
         self.temp_requirements_test = os.path.join(self.temp_requirements_dir, 'test.txt')
         self.temp_venv = os.path.join(self.temp_dir, 'venv')
         self.temp_venv_sphinx = os.path.join(self.temp_venv, 'bin/sphinx-build')
-        self.temp_located_requirements = self.temp_local_requirements
         self.temp_located_manage_py = self.temp_manage_py
         os.mkdir(self.temp_requirements_dir)
         os.mkdir(self.temp_venv)
@@ -123,65 +103,43 @@ class TestNoSetup(PathsTestBase):
 
 class TestRequiredSetup(PathsTestBase):
 
+    maxDiff = None
+
     def setUp(self):
         self.setup_temp_project()
 
-        paths.project_paths.setup(self.temp_dir, None, None)
+        self.project_paths = paths.ProjectPaths()
+        self.project_paths.setup(self.temp_dir, None, None)
+
+        self.temp_located_local_requirements = self.temp_local_requirements
+        self.temp_located_test_requirements = self.temp_test_requirements
+        self.temp_located_requirements_txt = self.temp_requirements
+
+    def _assert_paths(self):
+        actual = self.get_actual_paths()
+        expected = self.get_expected_paths()
+
+        self.assertDictEqual(expected, actual)
 
     def test_preferred_paths(self):
         """The state the paths should be in with only the required setup and all possible files"""
-        self.temp_located_requirements = self.temp_local_requirements
+        self._assert_paths()
 
-        actual = self.get_actual_paths()
-        expected = self.get_expected_paths()
-
-        self.assertDictEqual(expected, actual)
-
-    def test_test_requirements(self):
-        """A test_requirements file should be located when a local_requirements is not present."""
-        os.remove(self.temp_local_requirements)
-        self.temp_located_requirements = self.temp_test_requirements
-
-        actual = self.get_actual_paths()
-        expected = self.get_expected_paths()
-
-        self.assertDictEqual(expected, actual)
-
-    def test_requirements_local(self):
-        """A requirements/local.txt file should be located when a local/test_requirements files are not present."""
-        os.remove(self.temp_local_requirements)
+    def test_test_requirements_missing(self):
+        """A test_requirements file is not at the root."""
         os.remove(self.temp_test_requirements)
-        self.temp_located_requirements = self.temp_requirements_local
 
-        actual = self.get_actual_paths()
-        expected = self.get_expected_paths()
+        self.temp_located_test_requirements = self.temp_requirements_test
 
-        self.assertDictEqual(expected, actual)
+        self._assert_paths()
 
-    def test_requirements_test(self):
-        """A requirements/test.txt should be found when local/test_requirements and local.txt files are not present."""
+    def test_requirements_local_missing(self):
+        """A requirements/local.txt file should be located when a local_requirements is not at the root."""
         os.remove(self.temp_local_requirements)
-        os.remove(self.temp_test_requirements)
-        os.remove(self.temp_requirements_local)
-        self.temp_located_requirements = self.temp_requirements_test
 
-        actual = self.get_actual_paths()
-        expected = self.get_expected_paths()
+        self.temp_located_local_requirements = self.temp_requirements_local
 
-        self.assertDictEqual(expected, actual)
-
-    def test_requirements_fallback(self):
-        """A requirements.txt should be found when no other requirements files are present."""
-        os.remove(self.temp_local_requirements)
-        os.remove(self.temp_test_requirements)
-        os.remove(self.temp_requirements_local)
-        os.remove(self.temp_requirements_test)
-        self.temp_located_requirements = self.temp_requirements
-
-        actual = self.get_actual_paths()
-        expected = self.get_expected_paths()
-
-        self.assertDictEqual(expected, actual)
+        self._assert_paths()
 
 
 class TestPathOverrides(PathsTestBase):
@@ -189,9 +147,14 @@ class TestPathOverrides(PathsTestBase):
     def setUp(self):
         self.setup_temp_project()
 
+        self.temp_located_local_requirements = self.temp_local_requirements
+        self.temp_located_test_requirements = self.temp_test_requirements
+        self.temp_located_requirements_txt = self.temp_requirements
+
     def test_manage_root_override(self):
         """Overriding the manage dir with a valid path"""
-        paths.project_paths.setup(self.temp_dir, os.path.dirname(self.temp_manage_py), None)
+        self.project_paths = paths.ProjectPaths()
+        self.project_paths.setup(self.temp_dir, os.path.dirname(self.temp_manage_py), None)
 
         actual = self.get_actual_paths()
         expected = self.get_expected_paths()
@@ -201,15 +164,18 @@ class TestPathOverrides(PathsTestBase):
     def test_manage_root_invalid_override(self):
         """Overriding the manage dir with an invalid path"""
         try:
-            paths.project_paths.setup(self.temp_dir, 'not/a/place', None)
+            self.project_paths = paths.ProjectPaths()
+            self.project_paths.setup(self.temp_dir, 'not/a/place', None)
             self.fail('An error should have been raised')
         except ValueError:
             pass
 
     def test_local_requirements_override(self):
         """Overriding the local requirements with a valid path"""
-        paths.project_paths.setup(self.temp_dir, None, self.temp_requirements)
-        self.temp_located_requirements = self.temp_requirements
+        self.project_paths = paths.ProjectPaths()
+        self.project_paths.setup(self.temp_dir, None, self.temp_requirements)
+
+        self.temp_located_local_requirements = self.temp_requirements
 
         actual = self.get_actual_paths()
         expected = self.get_expected_paths()
@@ -219,7 +185,8 @@ class TestPathOverrides(PathsTestBase):
     def test_local_requirements_invalid_override(self):
         """Overriding the local requirements with an invalid path"""
         try:
-            paths.project_paths.setup(self.temp_dir, None, 'not/a/file.txt')
+            self.project_paths = paths.ProjectPaths()
+            self.project_paths.setup(self.temp_dir, None, 'not/a/file.txt')
             self.fail('An error should have been raised')
         except ValueError:
             pass
@@ -229,11 +196,13 @@ class TestPathSizeCheck(PathsTestBase):
 
     def setUp(self):
         self.setup_temp_project()
+        self.project_paths = paths.ProjectPaths()
+        self.project_paths.setup(self.temp_dir, None, None)
 
     def test_fails_if_larger(self):
         """Should fail if location is larger than expected"""
         try:
-            utils.safe_size_check(paths.project_paths.venv, "That's huge!", max_bytes=0)
+            utils.safe_size_check(self.project_paths.venv, "That's huge!", max_bytes=0)
             self.fail("Check did not fail as we expected.")
         except AssertionError:
             pass

@@ -15,6 +15,7 @@ requirements = [
     'six',
     'Django',
     'pynt',
+    'pynt-contrib',
 ]
 
 test_requirements = [
