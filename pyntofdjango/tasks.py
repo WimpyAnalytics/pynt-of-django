@@ -49,7 +49,7 @@ def delete_venv():
 def create_venv(local='y', test='y', general='y'):
     """Create virtualenv w/requirements. Specify y/n for local/test/general to control installation."""
     if not path.isdir(project_paths.venv):
-        execute('virtualenv', '--distribute', project_paths.venv)
+        execute('virtualenv', '--distribute', '--no-site-packages', project_paths.venv)
         project.execute_python('-m', 'easy_install', 'pip')
     if local.lower() == 'y' and project_paths.local_requirements:
         project.execute_pip('install', '--upgrade', '-r', project_paths.local_requirements)
