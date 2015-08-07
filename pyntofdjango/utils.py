@@ -8,7 +8,7 @@ from pyntcontrib import execute as _execute
 
 # TODO: Remove this when pyntcontrib's execute does this
 def _kwargs_to_execute_args(kwargs):
-    args = ['='.join([key, value]) for key, value in kwargs.items()]
+    args = ['='.join([str(key), str(value)]) for key, value in kwargs.items()]
     return args
 
 

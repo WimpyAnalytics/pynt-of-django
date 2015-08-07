@@ -58,7 +58,7 @@ class ProjectPaths(object):
     def test_requirements(self):
         if not self._test_requirements:
             self._locate_specific_requirements('test', '_test_requirements')
-        return self._check(self._test_requirements, "Test requirements file")
+        return self._test_requirements
 
     @property
     def requirements_txt(self):
@@ -71,13 +71,13 @@ class ProjectPaths(object):
                 if name in files:
                     self._requirements_txt = path.join(root, name)
                     return self._requirements_txt
-        return self._check(self._requirements_txt, "requirements.txt file")
+        return self._requirements_txt
 
     @property
     def local_requirements(self):
         if not self._local_requirements:
             self._locate_specific_requirements('local', '_local_requirements')
-        return self._check(self._local_requirements, "Local requirements file")
+        return self._local_requirements
 
     @property
     def venv(self):
