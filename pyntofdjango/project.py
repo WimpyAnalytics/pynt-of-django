@@ -1,24 +1,24 @@
 import os
 
-from paths import project_paths
-from utils import execute
+from .paths import project_paths
+from .utils import execute
 
 
-def venv_execute(script, *args):
+def venv_execute(script, *args, **kwargs):
     script_path = os.path.join(project_paths.venv, 'bin', script)
-    execute(script_path, *args)
+    execute(script_path, *args, **kwargs)
 
 
-def execute_pip(*args):
-    venv_execute('pip', *args)
+def execute_pip(*args, **kwargs):
+    venv_execute('pip', *args, **kwargs)
 
 
-def execute_python(*args):
-    venv_execute('python', *args)
+def execute_python(*args, **kwargs):
+    venv_execute('python', *args, **kwargs)
 
 
-def execute_manage(*args):
-    execute_python(project_paths.manage_py, *args)
+def execute_manage(*args, **kwargs):
+    execute_python(project_paths.manage_py, *args, **kwargs)
 
 
 def recursive_load(search_root):
