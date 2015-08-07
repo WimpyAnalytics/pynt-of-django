@@ -3,6 +3,15 @@
 History
 -------
 
+0.3.0 (2015-08-07)
+------------------
+
+* Most commands wrapping an underlying executable now accept both positional and named (--foo=bar) shell arguments.
+* create_venv now uses --no-site-packages for venv by default
+* test_tox is working again
+* clean works again, also cross platform compliant
+* Now using pyntcontrib functions where possible
+
 0.2.0 (2015-02-01)
 ------------------
 
