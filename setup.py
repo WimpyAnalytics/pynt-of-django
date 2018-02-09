@@ -13,7 +13,6 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
     'six',
-    'Django',
     'pynt',
     'pynt-contrib',
 ]
@@ -24,7 +23,7 @@ test_requirements = [
 
 setup(
     name='pynt-of-django',
-    version='0.3.1',
+    version='0.3.2',
     description='A companion library for using pynt, a build tool, with Django projects.',
     long_description=readme + '\n\n' + history,
     author='Ivan Ven Osdel',
@@ -47,7 +46,6 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.6',
     ],
 )

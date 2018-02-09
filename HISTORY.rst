@@ -3,6 +3,11 @@
 History
 -------
 
+0.3.2 (2018-02-09)
+------------------
+
+* Removed Django installation requirement
+
 0.3.1 (2018-02-09)
 ------------------
 
