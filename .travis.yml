@@ -1,12 +1,9 @@
 language: python
-python: 2.7
+python: 3.6
 install:
   - pip install tox
 script:
   - tox -e $TOXENV
 env:
-  - TOXENV=py34-dj1.7
-  - TOXENV=py33-dj1.7
+  - TOXENV=py36-dj2
   - TOXENV=py27-dj1.7
-  - TOXENV=py33-dj1.6
-  - TOXENV=py27-dj1.6
