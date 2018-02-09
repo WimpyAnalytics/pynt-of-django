@@ -29,7 +29,7 @@ setup(
     author='Ivan Ven Osdel',
     author_email='ivan@wimpyanalytics.com',
     url='https://github.com/WimpyAnalytics/pynt-of-django',
-    download_url='https://github.com/wimpyanalytics/pynt-of-django/tarball/0.3.1',
+    download_url='https://github.com/wimpyanalytics/pynt-of-django/tarball/0.3.2',
     packages=[
         'pyntofdjango',
     ],
