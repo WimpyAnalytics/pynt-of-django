@@ -3,6 +3,11 @@
 History
 -------
 
+0.3.1 (2018-02-09)
+------------------
+
+* Fixed issue with manage.py being found in .tox
+
 0.3.0 (2015-08-07)
 ------------------
 
