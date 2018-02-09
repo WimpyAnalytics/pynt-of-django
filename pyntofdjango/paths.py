@@ -42,7 +42,7 @@ class ProjectPaths(object):
         if not self._manage_root:
             # Use the first directory with a manage.py
             for root, dirs, files in walk(self.root):
-                if 'venv' in root:
+                if 'venv' in root or '.tox' in root:
                     continue
                 if 'manage.py' in files:
                     self._manage_root = root
