@@ -1,3 +1,6 @@
+# DEPRECATED
+This project was created before better approaches to executing scripts via a virtualenv's python (without activating the venv) existed. Now that can be accomplished with newer, more official, tools like pipenv, e.g. `pipenv run python`.
+
 # pynt-of-django
 This library provides a set of pre-built tasks for your, pynt based, build.py along with supporting utility and project specific functions.
 
